@@ -1,3 +1,3 @@
 # Dipalo
 
-A modern calculator created using Python and Image recognition technology.
+A terminal-based calculator, where a user would type in an expression, and the program would provide the result.
