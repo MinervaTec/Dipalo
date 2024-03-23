@@ -1,4 +1,5 @@
 import re
+from rich import print
 
 def separate_expression(expression):
     # Using regular expression to split numbers and operators
@@ -7,14 +8,48 @@ def separate_expression(expression):
     
     return numbers, operators
 
-expression = "1+5/5*1"
-numbers, operators = separate_expression(expression)
-result = (numbers, operators)
-# print(result)
+def clean_expression(expression):
+    # Check for illegal characters using regular expression
+    illegal_chars = re.findall(r'[^0-9.+\-*/]', expression)
+    
+    if illegal_chars:
+        error_index = expression.index(illegal_chars[0])
+        return {"expression": expression, "error": error_index}
+    
+    # Check if the expression ends with an operator
+    if expression[-1] in '+-*/':
+        return {"expression": expression, "error": len(expression) - 1}
+    
+    # Check if the first character is an operator other than + or -
+    if expression[0] in '*/':
+        return {"expression": expression, "error": 0}
+    
+    # Check for consecutive operators within the expression
+    for i in range(1, len(expression) - 1):
+        if expression[i] in '+-*/' and expression[i+1] in '+-*/':
+            return {"expression": expression, "error": i}
+    
+    return {"expression": expression, "error": None}
+    
+    
+
 
 
 def main():
-    pass
+
+    print("[bold blue]\n******Welcome to Dipalo******\n[/bold blue]")
+
+    expression = ''
+
+    while expression.lower() != "exit":
+        expression = input("Enter your expression: \n")
+
+        # clean expression
+        expression = clean_expression(expression)
+
+        if expression["error"] is not None:
+            print("Illegal character found at index:", expression["error"])
+    
 
 if "__main__" == __name__:
 
