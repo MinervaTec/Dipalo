@@ -1,4 +1,18 @@
 import re
+from rich import print
+import random
+import string
+
+def generate_id():
+    # Generate a random ID
+    id = ''.join(random.choices(string.digits + string.ascii_lowercase, k=4))
+    return id
+
+def check_unique_id(history):
+    while True:
+        new_id = generate_id()  # Generate a new ID
+        if new_id not in [expr['id'] for expr in history]:
+            return new_id  # Return the unique ID
 
 def separate_expression(expression):
     # Using regular expression to split numbers and operators
