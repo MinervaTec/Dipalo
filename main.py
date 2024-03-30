@@ -44,7 +44,45 @@ def clean_expression(expression):
     
     return {"expr": expression, "error": None}
 
+def perform_operations(expression, steps):
+    
+    # separate nuumbers from operators in expression then get the numbers and operations from the expression
 
+    nums, ops = separate_expression(expression)
+    
+    ops_priority = {'(':3, ')':3, '*':2, '/':2, '+':1, '-':1}
+    new_nums = False
+
+    while(len(nums) != 1):
+
+        for crnt_op_priority in ops_priority:
+
+            if new_nums:
+                new_nums = False
+                break
+
+            for i, op in enumerate(ops):
+                if op == crnt_op_priority:
+
+                    oprand_1 = nums[i]
+                    operand_2 = nums[i+1]
+
+                    # determine if operator (op) is a '(' operator
+                    if op == '(':
+                        pass
+                    else:
+                        steps.append(f'{oprand_1}{op}{operand_2}')
+                        result = str(eval(f'{oprand_1}{op}{operand_2}'))
+
+                        del nums[i]
+                        del nums[i]
+                        del ops[i]
+                        nums.insert(i, result)
+                        new_nums = True
+
+                    break
+
+    return result, steps            
 def main():
     
     history = []
@@ -74,7 +112,7 @@ def main():
         crnt_expression = crnt_expression["expr"]
 
 
-        result = perform_operations(separate_expression(crnt_expression), [])
+        result = perform_operations(crnt_expression, [])
 
         history.append( {
             "id":unique_id,
