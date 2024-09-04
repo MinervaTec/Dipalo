@@ -109,19 +109,20 @@ def main():
 
     print("[bold blue]\n******Welcome to Dipalo******\n[/bold blue]")
 
-    crnt_expression = ''
+    user_input = ''
 
     while True:
 
-        crnt_expression = input("Enter your expression:\nTo show more options, type options\n")
+        prompt_user("Enter your expression or type options")
+        user_input = get_input()
 
-        if crnt_expression.lower() == "exit":
+        if user_input.lower() == "options":
+            user_input = show_options()
+
+        if user_input.lower() == "exit":
             break
 
-        elif crnt_expression.lower() == "options":
-            show_options()
-
-        elif crnt_expression.lower() == "history":
+        elif user_input.lower() == "history":
 
             if history:
                 print('\nSelect number(i.e 1)')
@@ -149,24 +150,24 @@ def main():
 
         else:
 
-            # clean crnt_expression
-            crnt_expression = clean_expression(crnt_expression)
+            # clean user_input
+            user_input = clean_expression(user_input)
 
-            if crnt_expression["error"] is not None:
-                print("Illegal character found at index:", crnt_expression["error"])
+            if user_input["error"] is not None:
+                print("Illegal character found at index:", user_input["error"])
                 continue
 
             # create a new history expression with unique id
             unique_id = check_unique_id(history)
 
             # make expression to be string again
-            crnt_expression = crnt_expression["expr"]
+            user_input = user_input["expr"]
 
-            result = perform_operations(crnt_expression, [])
+            result = perform_operations(user_input, [])
 
             history.append({
                 "id": unique_id,
-                "expression": crnt_expression,
+                "expression": user_input,
                 "steps": result[1],
                 "result": result[0]
             })
@@ -176,10 +177,30 @@ def main():
             # print(result[1])
 
 
+def get_input():
+    return input("> ")
+
+def prompt_user(prompt):
+    print(f"Dipalo > {prompt}")
+
+
 def show_options():
-    print("/n select one option, using its number:")
-    print("/n 1. history")
-    print("/n 2. exit")
+    options = {1: "history", 2: "exit"}
+
+    while True:
+        print("\nSelect one option, using its number:")
+
+        #dispplay options
+        for x in range(len(options)):
+            print(f"{x + 1}. {options[x + 1]}")
+
+        option = int(get_input())
+
+        # Determine if the option is in the range of 1 and 2
+        if 1 <= option <= len(options):
+            return options[option]
+        else:
+            print("Invalid option. Please select a valid option.")
 
 
 if "__main__" == __name__:
